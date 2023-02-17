@@ -6,7 +6,7 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 15:05:02 by kafortin          #+#    #+#             */
-/*   Updated: 2023/02/13 16:49:18 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/02/16 19:01:43 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,22 +44,4 @@ void	exit_error(char *error)
 {
 	perror(error);
 	exit(1);
-}
-
-void	close_all(t_files *files)
-{
-	close(files->fd[0]);
-	close(files->fd[1]);
-	// close(files->input);
-	close(files->output);
-}
-
-void	open_files(t_files *files, char **argv, int argc)
-{
-	files->input = open(argv[1], O_RDONLY);
-	if (files->input < 0)
-		exit_error("Error: file could not be opened");
-	files->output = open(argv[argc - 1], O_TRUNC | O_CREAT | O_WRONLY, 0644);
-	if (files->output < 0)
-		exit_error("Error: file could not be opened/created");
 }
