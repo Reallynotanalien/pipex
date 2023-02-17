@@ -6,7 +6,7 @@
 #    By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/05 20:32:19 by kafortin          #+#    #+#              #
-#    Updated: 2023/02/13 16:54:33 by kafortin         ###   ########.fr        #
+#    Updated: 2023/02/16 19:07:06 by kafortin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,6 +23,7 @@ FILES = pipex.c \
 
 FILES_BONUS = 	pipex_bonus.c \
 				utils_bonus.c \
+				path_bonus.c \
 
 OBJS = $(FILES:.c=.o)
 
