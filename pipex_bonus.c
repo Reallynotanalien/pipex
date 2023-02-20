@@ -6,7 +6,7 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:57:05 by kafortin          #+#    #+#             */
-/*   Updated: 2023/02/20 16:39:22 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/02/20 16:48:47 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,22 @@ void	child_two(char **argv, int argc, t_files *files, char **env)
 {
 	t_cmd	*cmd;
 
-	cmd = find_cmd(argv[argc - 2], env);
-	files->output = open(argv[argc - 1], O_TRUNC | O_CREAT | O_WRONLY, 0644);
-	if (files->output < 0)
-		exit_error("Error: file could not be opened/created");
-	dup2(files->output, STDOUT_FILENO);
-	execve(cmd->path.path, (char *const *)cmd->cmd, env);
-	free_struct(cmd);
+	if (pipe(files->fd) < 0)
+		exit_error("Error: pipe did not work");
+	files->pid1 = fork();
+	if (files->pid1 == -1)
+		exit_error("Error: fork did not work");
+	else if (files->pid1 == 0)
+	{
+		cmd = find_cmd(argv[argc - 2], env);
+		files->output = open(argv[argc - 1],
+				O_TRUNC | O_CREAT | O_WRONLY, 0644);
+		if (files->output < 0)
+			exit_error("Error: file could not be opened/created");
+		dup2(files->output, STDOUT_FILENO);
+		execve(cmd->path.path, (char *const *)cmd->cmd, env);
+		free_struct(cmd);
+	}
 }
 
 void	command_loop(int argc, char **argv, char **env, t_files *files)
