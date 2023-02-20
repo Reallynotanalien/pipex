@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kafortin <kafortin@student.42quebec.com    +#+  +:+       +#+        */
+/*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:57:05 by kafortin          #+#    #+#             */
-/*   Updated: 2023/01/27 15:21:20 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/02/20 17:22:27 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,8 @@ t_cmd	*find_cmd(char *argv, char **env)
 		free_struct(cmd);
 		exit_error("Error: command not found");
 	}
-	if (access(argv, F_OK) == 0)
-		cmd->path.path = argv;
+	if (access(cmd->cmd[0], F_OK) == 0)
+		cmd->path.path = cmd->cmd[0];
 	else
 		cmd->path.path = find_path(cmd, env);
 	if (cmd->path.path == NULL)
