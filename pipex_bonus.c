@@ -6,7 +6,7 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:57:05 by kafortin          #+#    #+#             */
-/*   Updated: 2023/02/20 16:48:47 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/02/20 17:16:09 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void	child_one(char **argv, int i, t_files *files, char **env)
 
 	cmd = find_cmd(argv[i], env);
 	close(files->fd[0]);
+	close (files->output);
 	dup2(files->fd[1], STDOUT_FILENO);
 	close(files->fd[1]);
 	execve(cmd->path.path, (char *const *)cmd->cmd, env);
@@ -38,10 +39,6 @@ void	child_two(char **argv, int argc, t_files *files, char **env)
 	else if (files->pid1 == 0)
 	{
 		cmd = find_cmd(argv[argc - 2], env);
-		files->output = open(argv[argc - 1],
-				O_TRUNC | O_CREAT | O_WRONLY, 0644);
-		if (files->output < 0)
-			exit_error("Error: file could not be opened/created");
 		dup2(files->output, STDOUT_FILENO);
 		execve(cmd->path.path, (char *const *)cmd->cmd, env);
 		free_struct(cmd);
@@ -78,6 +75,9 @@ int	main(int argc, char **argv, char **env)
 
 	if (argc < 5)
 		exit_error("Invalid number of arguments.");
+	files.output = open(argv[argc - 1], O_TRUNC | O_CREAT | O_WRONLY, 0644);
+	if (files.output < 0)
+		exit_error("Error: file could not be opened/created");
 	files.input = open(argv[1], O_RDONLY);
 	if (files.input < 0)
 		exit_error("Error: file could not be opened");
