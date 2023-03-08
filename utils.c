@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kafortin <kafortin@student.42quebec.com    +#+  +:+       +#+        */
+/*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 15:05:02 by kafortin          #+#    #+#             */
-/*   Updated: 2023/01/18 18:47:06 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/03/08 15:58:10 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,12 +40,6 @@ void	free_struct(t_cmd *cmd)
 		free(cmd);
 }
 
-void	exit_error(char *error)
-{
-	perror(error);
-	exit(1);
-}
-
 void	close_all(t_files *files)
 {
 	close(files->fd[0]);
@@ -54,12 +48,25 @@ void	close_all(t_files *files)
 	close(files->output);
 }
 
+void	exit_error(t_files *files, char *error)
+{
+	close_all(files);
+	perror(error);
+	exit(1);
+}
+
 void	open_files(t_files *files, char **argv)
 {
 	files->input = open(argv[1], O_RDONLY);
-	if (files->input < 0)
-		exit_error("Error: file could not be opened");
 	files->output = open(argv[4], O_TRUNC | O_CREAT | O_WRONLY, 0644);
+	if (files->input < 0)
+	{
+		close(files->output);
+		exit_error(files, OPEN_ERROR);
+	}
 	if (files->output < 0)
-		exit_error("Error: file could not be opened/created");
+	{
+		close(files->input);
+		exit_error(files, OPEN_ERROR);
+	}
 }

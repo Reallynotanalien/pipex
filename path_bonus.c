@@ -6,7 +6,7 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/16 19:05:22 by kafortin          #+#    #+#             */
-/*   Updated: 2023/02/16 19:05:48 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/03/01 18:03:05 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ t_cmd	*find_cmd(char *argv, char **env)
 	if (cmd->cmd == NULL)
 	{
 		free_struct(cmd);
-		exit_error("Error: command not found");
+		exit_error("Error: command not  found");
 	}
 	if (access(argv, F_OK) == 0)
 		cmd->path.path = argv;
@@ -70,7 +70,7 @@ t_cmd	*find_cmd(char *argv, char **env)
 	if (cmd->path.path == NULL)
 	{
 		free_struct(cmd);
-		exit_error("Error: command not found");
+		exit_error("Error: command not  found");
 	}
 	return (cmd);
 }
