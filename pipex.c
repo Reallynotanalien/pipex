@@ -6,7 +6,7 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:57:05 by kafortin          #+#    #+#             */
-/*   Updated: 2023/03/08 16:00:12 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/03/08 16:13:16 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <signal.h>
 #include <stdbool.h>
 
-char	*find_path(t_cmd *cmd, char **env, t_files *files)
+char	*find_path(t_cmd *cmd, char **env)
 {
 	int		i;
 
@@ -25,7 +25,7 @@ char	*find_path(t_cmd *cmd, char **env, t_files *files)
 			break ;
 		i++;
 		if (env[i + 1] == NULL)
-			exit_error(files, ENV_ERROR);
+			exit_error(ENV_ERROR);
 	}
 	cmd->path.paths = (char **)ft_split(env[i], ':');
 	i = 0;
@@ -43,7 +43,7 @@ char	*find_path(t_cmd *cmd, char **env, t_files *files)
 	return (NULL);
 }
 
-t_cmd	*find_cmd(char *argv, char **env, t_files *files)
+t_cmd	*find_cmd(char *argv, char **env)
 {
 	t_cmd	*cmd;
 
@@ -52,16 +52,16 @@ t_cmd	*find_cmd(char *argv, char **env, t_files *files)
 	if (cmd->cmd == NULL)
 	{
 		free_struct(cmd);
-		exit_error(files, COMMAND_ERROR);
+		exit_error(COMMAND_ERROR);
 	}
 	if (access(cmd->cmd[0], F_OK) == 0)
 		cmd->path.path = cmd->cmd[0];
 	else
-		cmd->path.path = find_path(cmd, env, files);
+		cmd->path.path = find_path(cmd, env);
 	if (cmd->path.path == NULL)
 	{
 		free_struct(cmd);
-		exit_error(files, PATH_ERROR);
+		exit_error(PATH_ERROR);
 	}
 	return (cmd);
 }
@@ -70,7 +70,7 @@ void	child_one(char **argv, t_files *files, char **env)
 {
 	t_cmd	*cmd;
 
-	cmd = find_cmd(argv[2], env, files);
+	cmd = find_cmd(argv[2], env);
 	dup2(files->fd[1], STDOUT_FILENO);
 	dup2(files->input, STDIN_FILENO);
 	close_all(files);
@@ -82,7 +82,7 @@ void	child_two(char **argv, t_files *files, char **env)
 {
 	t_cmd	*cmd;
 
-	cmd = find_cmd(argv[3], env, files);
+	cmd = find_cmd(argv[3], env);
 	dup2(files->fd[0], STDIN_FILENO);
 	dup2(files->output, STDOUT_FILENO);
 	close_all(files);
@@ -95,20 +95,20 @@ int	main(int argc, char **argv, char **env)
 	t_files	files;
 
 	if (argc != 5)
-		exit_error(&files, ARG_NUM_ERROR);
+		exit_error(ARG_NUM_ERROR);
 	open_files(&files, argv);
 	if (pipe(files.fd) < 0)
-		exit_error(&files, PIPE_ERROR);
+		exit_error(PIPE_ERROR);
 	files.pid1 = fork();
 	if (files.pid1 == -1)
-		exit_error(&files, FORK_ERROR);
+		exit_error(FORK_ERROR);
 	else if (files.pid1 == 0)
 		child_one(argv, &files, env);
 	else
 	{
 		files.pid2 = fork();
 		if (files.pid2 == -1)
-			exit_error(&files, FORK_ERROR);
+			exit_error(FORK_ERROR);
 		else if (files.pid2 == 0)
 			child_two(argv, &files, env);
 		close_all(&files);

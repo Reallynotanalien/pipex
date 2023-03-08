@@ -6,7 +6,7 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:57:01 by kafortin          #+#    #+#             */
-/*   Updated: 2023/03/08 15:56:32 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/03/08 16:12:05 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ typedef struct files
 
 void	free_tab(char **tab);
 void	free_struct(t_cmd *cmd);
-void	exit_error(t_files *files, char *error);
+void	exit_error(char *error);
 void	open_files(t_files *files, char **argv);
 void	close_all(t_files *files);
 

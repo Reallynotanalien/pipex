@@ -6,7 +6,7 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 15:05:02 by kafortin          #+#    #+#             */
-/*   Updated: 2023/03/08 15:58:10 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/03/08 16:11:55 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,8 @@ void	close_all(t_files *files)
 	close(files->output);
 }
 
-void	exit_error(t_files *files, char *error)
+void	exit_error(char *error)
 {
-	close_all(files);
 	perror(error);
 	exit(1);
 }
@@ -62,11 +61,11 @@ void	open_files(t_files *files, char **argv)
 	if (files->input < 0)
 	{
 		close(files->output);
-		exit_error(files, OPEN_ERROR);
+		exit_error(OPEN_ERROR);
 	}
 	if (files->output < 0)
 	{
 		close(files->input);
-		exit_error(files, OPEN_ERROR);
+		exit_error(OPEN_ERROR);
 	}
 }
