@@ -6,7 +6,7 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:57:05 by kafortin          #+#    #+#             */
-/*   Updated: 2023/03/08 16:13:16 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/03/08 19:47:41 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ char	*find_path(t_cmd *cmd, char **env)
 		if (ft_strncmp("PATH=", env[i], 5) == 0)
 			break ;
 		i++;
-		if (env[i + 1] == NULL)
-			exit_error(ENV_ERROR);
+		if (env[i] == NULL || env[i + 1] == NULL)
+			return (ENV_ERROR);
 	}
 	cmd->path.paths = (char **)ft_split(env[i], ':');
 	i = 0;
@@ -43,7 +43,7 @@ char	*find_path(t_cmd *cmd, char **env)
 	return (NULL);
 }
 
-t_cmd	*find_cmd(char *argv, char **env)
+t_cmd	*find_cmd(char *argv, char **env, t_files *files)
 {
 	t_cmd	*cmd;
 
@@ -52,15 +52,19 @@ t_cmd	*find_cmd(char *argv, char **env)
 	if (cmd->cmd == NULL)
 	{
 		free_struct(cmd);
+		close_all(files);
 		exit_error(COMMAND_ERROR);
 	}
 	if (access(cmd->cmd[0], F_OK) == 0)
 		cmd->path.path = cmd->cmd[0];
 	else
 		cmd->path.path = find_path(cmd, env);
-	if (cmd->path.path == NULL)
+	if (cmd->path.path == NULL
+		|| ft_strncmp(ENV_ERROR, cmd->path.path, 43) == 0)
 	{
-		free_struct(cmd);
+		free_tab(cmd->cmd);
+		free(cmd);
+		close_all(files);
 		exit_error(PATH_ERROR);
 	}
 	return (cmd);
@@ -70,7 +74,7 @@ void	child_one(char **argv, t_files *files, char **env)
 {
 	t_cmd	*cmd;
 
-	cmd = find_cmd(argv[2], env);
+	cmd = find_cmd(argv[2], env, files);
 	dup2(files->fd[1], STDOUT_FILENO);
 	dup2(files->input, STDIN_FILENO);
 	close_all(files);
@@ -82,7 +86,7 @@ void	child_two(char **argv, t_files *files, char **env)
 {
 	t_cmd	*cmd;
 
-	cmd = find_cmd(argv[3], env);
+	cmd = find_cmd(argv[3], env, files);
 	dup2(files->fd[0], STDIN_FILENO);
 	dup2(files->output, STDOUT_FILENO);
 	close_all(files);
