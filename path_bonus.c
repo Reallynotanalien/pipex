@@ -6,7 +6,7 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/16 19:05:22 by kafortin          #+#    #+#             */
-/*   Updated: 2023/03/01 18:03:05 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/03/08 19:52:15 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	find_env(char **env)
 			break ;
 		i++;
 		if (env[i + 1] == NULL)
-			exit_error("Error: PATH is not an environment variable");
+			exit_error(ENV_ERROR);
 	}
 	return (i);
 }
@@ -61,7 +61,7 @@ t_cmd	*find_cmd(char *argv, char **env)
 	if (cmd->cmd == NULL)
 	{
 		free_struct(cmd);
-		exit_error("Error: command not  found");
+		exit_error(COMMAND_ERROR);
 	}
 	if (access(argv, F_OK) == 0)
 		cmd->path.path = argv;
@@ -70,7 +70,7 @@ t_cmd	*find_cmd(char *argv, char **env)
 	if (cmd->path.path == NULL)
 	{
 		free_struct(cmd);
-		exit_error("Error: command not  found");
+		exit_error(COMMAND_ERROR);
 	}
 	return (cmd);
 }

@@ -6,7 +6,7 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:57:01 by kafortin          #+#    #+#             */
-/*   Updated: 2023/02/16 19:06:57 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/03/08 19:50:51 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,14 @@
 # include <sys/types.h>
 # include <fcntl.h>
 # include <errno.h>
+
+# define FORK_ERROR "Error: fork did not work."
+# define PIPE_ERROR "Error: pipe did not work."
+# define ARG_NUM_ERROR "Error: invalid number of arguments."
+# define PATH_ERROR "Error: path not found."
+# define COMMAND_ERROR "Error: command not found."
+# define ENV_ERROR "Error: PATH is not an environment variable."
+# define OPEN_ERROR "Error: file could not be opened."
 
 typedef struct path
 {
