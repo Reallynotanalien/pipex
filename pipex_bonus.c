@@ -6,7 +6,7 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:57:05 by kafortin          #+#    #+#             */
-/*   Updated: 2023/03/08 19:54:22 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/03/09 17:58:33 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	child_one(char **argv, int i, t_files *files, char **env)
 
 	cmd = find_cmd(argv[i], env);
 	close(files->fd[0]);
-	close (files->output);
+	close(files->output);
 	dup2(files->fd[1], STDOUT_FILENO);
 	close(files->fd[1]);
 	execve(cmd->path.path, (char *const *)cmd->cmd, env);
@@ -40,7 +40,10 @@ void	child_two(char **argv, int argc, t_files *files, char **env)
 	else if (files->pid1 == 0)
 	{
 		cmd = find_cmd(argv[argc - 2], env);
+		close(files->fd[0]);
+		close(files->fd[1]);
 		dup2(files->output, STDOUT_FILENO);
+		close(files->output);
 		execve(cmd->path.path, (char *const *)cmd->cmd, env);
 		free_struct(cmd);
 	}
@@ -106,11 +109,18 @@ int	main(int argc, char **argv, char **env)
 	validate_heredoc(argv, argc, &files);
 	files.output = open(argv[argc - 1], O_TRUNC | O_CREAT | O_WRONLY, 0644);
 	if (files.input < 0 || files.output < 0)
+	{
+		close(files.input);
+		close(files.output);
 		exit_error(OPEN_ERROR);
+	}
 	dup2(files.input, STDIN_FILENO);
 	close(files.input);
 	command_loop(argc, argv, env, &files);
 	child_two(argv, argc, &files, env);
+	close(files.fd[0]);
+	close(files.fd[1]);
+	close(files.output);
 	waitpid(files.pid1, NULL, 0);
 	if (ft_strncmp("here_doc", argv[1], 8) == 0)
 		unlink("here_doc");
