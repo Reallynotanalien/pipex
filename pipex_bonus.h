@@ -6,7 +6,7 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:57:01 by kafortin          #+#    #+#             */
-/*   Updated: 2023/03/10 17:54:44 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/03/10 18:09:17 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,13 +46,13 @@ typedef struct files
 	int		fd[2];
 	int		input;
 	int		output;
-	pid_t	pid1;
-	pid_t	pid2;
+	pid_t	pid;
 }			t_files;
 
 void	free_tab(char **tab);
 void	free_struct(t_cmd *cmd);
 void	exit_error(char *error);
+void	close_all(t_files *files);
 t_cmd	*find_cmd(char *argv, char **env, t_files *files);
 void	close_exit(char *error, t_files *files);
 

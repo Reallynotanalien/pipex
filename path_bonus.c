@@ -6,7 +6,7 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/16 19:05:22 by kafortin          #+#    #+#             */
-/*   Updated: 2023/03/10 18:02:54 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/03/10 18:16:26 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,10 +56,7 @@ t_cmd	*find_cmd(char *argv, char **env, t_files *files)
 	if (cmd->cmd == NULL)
 	{
 		free_struct(cmd);
-		close(files->fd[0]);
-		close(files->fd[1]);
-		close(files->output);
-		exit_error(COMMAND_ERROR);
+		close_exit(COMMAND_ERROR, files);
 	}
 	if (access(argv, F_OK) == 0)
 		cmd->path.path = argv;
@@ -69,10 +66,7 @@ t_cmd	*find_cmd(char *argv, char **env, t_files *files)
 		|| ft_strncmp(ENV_ERROR, cmd->path.path, 43) == 0)
 	{
 		free_struct(cmd);
-		close(files->fd[0]);
-		close(files->fd[1]);
-		close(files->output);
-		exit_error(COMMAND_ERROR);
+		close_exit(ENV_ERROR, files);
 	}
 	return (cmd);
 }

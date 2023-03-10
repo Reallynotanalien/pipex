@@ -6,7 +6,7 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:57:05 by kafortin          #+#    #+#             */
-/*   Updated: 2023/03/10 17:54:25 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/03/10 18:15:32 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,10 @@ void	child_two(char **argv, int argc, t_files *files, char **env)
 
 	if (pipe(files->fd) < 0)
 		close_exit(PIPE_ERROR, files);
-	files->pid1 = fork();
-	if (files->pid1 == -1)
+	files->pid = fork();
+	if (files->pid == -1)
 		close_exit(FORK_ERROR, files);
-	else if (files->pid1 == 0)
+	else if (files->pid == 0)
 	{
 		cmd = find_cmd(argv[argc - 2], env, files);
 		close(files->fd[0]);
@@ -66,10 +66,10 @@ void	command_loop(int argc, char **argv, char **env, t_files *files)
 	{
 		if (pipe(files->fd) < 0)
 			close_exit(PIPE_ERROR, files);
-		files->pid1 = fork();
-		if (files->pid1 == -1)
+		files->pid = fork();
+		if (files->pid == -1)
 			close_exit(FORK_ERROR, files);
-		else if (files->pid1 == 0)
+		else if (files->pid == 0)
 			child_one(argv, i, files, env);
 		else
 		{
@@ -123,18 +123,13 @@ int	main(int argc, char **argv, char **env)
 	validate_heredoc(argv, argc, &files);
 	files.output = open(argv[argc - 1], O_TRUNC | O_CREAT | O_WRONLY, 0644);
 	if (files.input < 0 || files.output < 0)
-	{
-		close(files.input);
 		close_exit(OPEN_ERROR, &files);
-	}
 	dup2(files.input, STDIN_FILENO);
 	close(files.input);
 	command_loop(argc, argv, env, &files);
 	child_two(argv, argc, &files, env);
-	close(files.fd[0]);
-	close(files.fd[1]);
-	close(files.output);
-	waitpid(files.pid1, NULL, 0);
+	close_all(&files);
+	waitpid(files.pid, NULL, 0);
 	if (ft_strncmp("here_doc", argv[1], 8) == 0)
 		unlink(".here_doc");
 	return (0);
