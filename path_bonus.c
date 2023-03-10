@@ -6,7 +6,7 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/16 19:05:22 by kafortin          #+#    #+#             */
-/*   Updated: 2023/03/08 19:52:15 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/03/10 18:02:54 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 #include <signal.h>
 #include <stdbool.h>
 
-int	find_env(char **env)
+/*Looks through the environment to find an executable path for the command sent
+as an argument.*/
+char	*find_path(t_cmd *cmd, char **env)
 {
 	int		i;
 
@@ -24,35 +26,28 @@ int	find_env(char **env)
 		if (ft_strncmp("PATH=", env[i], 5) == 0)
 			break ;
 		i++;
-		if (env[i + 1] == NULL)
-			exit_error(ENV_ERROR);
+		if (env[i] == NULL || env[i + 1] == NULL)
+			return (ENV_ERROR);
 	}
-	return (i);
-}
-
-char	*find_path(t_cmd *cmd, char **env)
-{
-	int		i;
-
-	i = find_env(env);
 	cmd->path.paths = (char **)ft_split(env[i], ':');
 	i = 0;
 	while (cmd->path.paths[i])
 	{
-		i++;
 		cmd->path.part = ft_strjoin(cmd->path.paths[i], "/");
 		cmd->path.path = ft_strjoin (cmd->path.part, cmd->cmd[0]);
-		if (cmd->path.part != NULL)
-			free(cmd->path.part);
+		free(cmd->path.part);
 		if (access(cmd->path.path, F_OK) == 0)
 			return (cmd->path.path);
 		free(cmd->path.path);
 		cmd->path.path = NULL;
+		i++;
 	}
 	return (NULL);
 }
 
-t_cmd	*find_cmd(char *argv, char **env)
+/*Takes argv[] as an argument to find what command it is. Checks if absolute
+path is executable, if not, finds the right executable path then returns it.*/
+t_cmd	*find_cmd(char *argv, char **env, t_files *files)
 {
 	t_cmd	*cmd;
 
@@ -61,15 +56,22 @@ t_cmd	*find_cmd(char *argv, char **env)
 	if (cmd->cmd == NULL)
 	{
 		free_struct(cmd);
+		close(files->fd[0]);
+		close(files->fd[1]);
+		close(files->output);
 		exit_error(COMMAND_ERROR);
 	}
 	if (access(argv, F_OK) == 0)
 		cmd->path.path = argv;
 	else
 		cmd->path.path = find_path(cmd, env);
-	if (cmd->path.path == NULL)
+	if (cmd->path.path == NULL
+		|| ft_strncmp(ENV_ERROR, cmd->path.path, 43) == 0)
 	{
 		free_struct(cmd);
+		close(files->fd[0]);
+		close(files->fd[1]);
+		close(files->output);
 		exit_error(COMMAND_ERROR);
 	}
 	return (cmd);
