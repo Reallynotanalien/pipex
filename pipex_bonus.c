@@ -6,7 +6,7 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:57:05 by kafortin          #+#    #+#             */
-/*   Updated: 2023/03/09 17:58:33 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/03/10 16:45:05 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,9 +89,13 @@ void	validate_heredoc(char **argv, int argc, t_files *files)
 		{
 			if ((ft_strlen(str) == ft_strlen(argv[2]) + 1)
 				&& (ft_strncmp(str, argv[2], ft_strlen(argv[2])) == 0))
+			{
+				free(str);
 				break ;
+			}
 			else
 				write(temp_file, str, ft_strlen(str));
+			free(str);
 		}
 		close(temp_file);
 		files->input = open("here_doc", O_RDONLY);

@@ -6,7 +6,7 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:57:05 by kafortin          #+#    #+#             */
-/*   Updated: 2023/03/08 19:47:41 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/03/10 16:56:16 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #include <signal.h>
 #include <stdbool.h>
 
+/*Looks through the environment to find an executable path for the command sent
+as an argument.*/
 char	*find_path(t_cmd *cmd, char **env)
 {
 	int		i;
@@ -43,6 +45,8 @@ char	*find_path(t_cmd *cmd, char **env)
 	return (NULL);
 }
 
+/*Takes argv[] as an argument to find what command it is. Checks if absolute
+path is executable, if not, finds the right executable path then returns it.*/
 t_cmd	*find_cmd(char *argv, char **env, t_files *files)
 {
 	t_cmd	*cmd;
@@ -70,6 +74,7 @@ t_cmd	*find_cmd(char *argv, char **env, t_files *files)
 	return (cmd);
 }
 
+/*Looks for the first command, then executes it.*/
 void	child_one(char **argv, t_files *files, char **env)
 {
 	t_cmd	*cmd;
@@ -82,6 +87,7 @@ void	child_one(char **argv, t_files *files, char **env)
 	free_struct(cmd);
 }
 
+/*Looks for the second command, then executes it.*/
 void	child_two(char **argv, t_files *files, char **env)
 {
 	t_cmd	*cmd;
