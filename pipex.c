@@ -6,7 +6,7 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:57:05 by kafortin          #+#    #+#             */
-/*   Updated: 2023/03/10 16:56:16 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/03/13 16:12:46 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ char	*find_path(t_cmd *cmd, char **env)
 		if (env[i] == NULL || env[i + 1] == NULL)
 			return (ENV_ERROR);
 	}
-	cmd->path.paths = (char **)ft_split(env[i], ':');
+	cmd->path.paths = (char **)ft_split(env[i] + 5, ':');
 	i = 0;
 	while (cmd->path.paths[i])
 	{
@@ -67,6 +67,7 @@ t_cmd	*find_cmd(char *argv, char **env, t_files *files)
 		|| ft_strncmp(ENV_ERROR, cmd->path.path, 43) == 0)
 	{
 		free_tab(cmd->cmd);
+		free_tab(cmd->path.paths);
 		free(cmd);
 		close_all(files);
 		exit_error(PATH_ERROR);

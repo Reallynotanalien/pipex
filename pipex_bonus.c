@@ -6,7 +6,7 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:57:05 by kafortin          #+#    #+#             */
-/*   Updated: 2023/03/10 18:15:32 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/03/13 16:31:19 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,8 +122,16 @@ int	main(int argc, char **argv, char **env)
 		exit_error(ARG_NUM_ERROR);
 	validate_heredoc(argv, argc, &files);
 	files.output = open(argv[argc - 1], O_TRUNC | O_CREAT | O_WRONLY, 0644);
-	if (files.input < 0 || files.output < 0)
-		close_exit(OPEN_ERROR, &files);
+	if (files.input < 0)
+	{
+		close(files.output);
+		exit_error(OPEN_ERROR);
+	}
+	if (files.output < 0)
+	{
+		close(files.input);
+		exit_error(OPEN_ERROR);
+	}
 	dup2(files.input, STDIN_FILENO);
 	close(files.input);
 	command_loop(argc, argv, env, &files);

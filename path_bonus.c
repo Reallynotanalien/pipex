@@ -6,13 +6,32 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/16 19:05:22 by kafortin          #+#    #+#             */
-/*   Updated: 2023/03/10 18:16:26 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/03/13 16:40:11 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
 #include <signal.h>
 #include <stdbool.h>
+
+char	*access_path(t_cmd *cmd)
+{
+	int	i;
+
+	i = 0;
+	while (cmd->path.paths[i])
+	{
+		cmd->path.part = ft_strjoin(cmd->path.paths[i], "/");
+		cmd->path.path = ft_strjoin (cmd->path.part, cmd->cmd[0]);
+		free(cmd->path.part);
+		if (access(cmd->path.path, F_OK) == 0)
+			return (cmd->path.path);
+		free(cmd->path.path);
+		cmd->path.path = NULL;
+		i++;
+	}
+	return (NULL);
+}
 
 /*Looks through the environment to find an executable path for the command sent
 as an argument.*/
@@ -29,20 +48,10 @@ char	*find_path(t_cmd *cmd, char **env)
 		if (env[i] == NULL || env[i + 1] == NULL)
 			return (ENV_ERROR);
 	}
-	cmd->path.paths = (char **)ft_split(env[i], ':');
+	cmd->path.paths = (char **)ft_split(env[i] + 5, ':');
 	i = 0;
-	while (cmd->path.paths[i])
-	{
-		cmd->path.part = ft_strjoin(cmd->path.paths[i], "/");
-		cmd->path.path = ft_strjoin (cmd->path.part, cmd->cmd[0]);
-		free(cmd->path.part);
-		if (access(cmd->path.path, F_OK) == 0)
-			return (cmd->path.path);
-		free(cmd->path.path);
-		cmd->path.path = NULL;
-		i++;
-	}
-	return (NULL);
+	cmd->path.path = access_path(cmd);
+	return (cmd->path.path);
 }
 
 /*Takes argv[] as an argument to find what command it is. Checks if absolute
