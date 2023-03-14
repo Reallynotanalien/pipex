@@ -6,7 +6,7 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:57:05 by kafortin          #+#    #+#             */
-/*   Updated: 2023/03/14 17:14:12 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/03/14 17:32:01 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,9 @@ void	child_two(char **argv, int argc, t_files *files, char **env)
 }
 
 /*Creates a new child process for each command (except the last one) and
-executes the command in the child.*/
+executes the command in the child. When all of this is done, creates another
+child to execute the last command and redirects the output to the output 
+file.*/
 void	command_loop(int argc, char **argv, char **env, t_files *files)
 {
 	int	i;
@@ -86,10 +88,10 @@ void	command_loop(int argc, char **argv, char **env, t_files *files)
 	child_two(argv, argc, files, env);
 }
 
-/*Checks to see if the first argument is here_doc. If so, opens a temporary
-file and uses get_next_line to take input from the terminal and put it in 
-that file. It then becomes the input file. If the first argument is not 
-here_doc, the input file (which should be the first arg) is opened.*/
+/*Opens a temporary file called .here_doc and uses get_next_line to take input
+from the terminal and put it in that file. It is then closed, then reopened
+in RD_ONLY mode to use as input for the program. The output file is opened
+with O_APPEND to deal with << >>.*/
 void	open_heredoc(char **argv, int argc, t_files *files)
 {
 	char	*str;
