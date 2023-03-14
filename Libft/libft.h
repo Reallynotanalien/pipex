@@ -6,7 +6,7 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/12 16:30:13 by kafortin          #+#    #+#             */
-/*   Updated: 2023/03/14 16:36:48 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/03/14 16:44:39 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void			ft_strcpy(char *dest, const char *src);
 char			*search_and_replace(char *str, char search, char replace);
 int				get_next_line(int fd, char **line);
 unsigned int	scan_for_nl(const char *src);
-void			free_if_not_emptu(char **str);
+void			free_if_not_empty(char **str);
 char			*null_calloc(char **str, unsigned int count, unsigned int size);
 char			*copy_from_src(char *dest, const char *src, unsigned int len);
 unsigned int	find_len_until(const char *str, const char to_find);

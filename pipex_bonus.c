@@ -6,7 +6,7 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:57:05 by kafortin          #+#    #+#             */
-/*   Updated: 2023/03/14 16:33:55 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/03/14 17:04:58 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,8 @@ void	command_loop(int argc, char **argv, char **env, t_files *files)
 	int	i;
 
 	i = 2;
+	dup2(files->input, STDIN_FILENO);
+	close(files->input);
 	if (ft_strncmp("here_doc", argv[1], 8) == 0)
 		i = 3;
 	while (i < argc - 2)
@@ -79,39 +81,38 @@ void	command_loop(int argc, char **argv, char **env, t_files *files)
 		}
 		i++;
 	}
+	child_two(argv, argc, &files, env);
+	close_all(&files);
+	waitpid(files->pid, NULL, 0);
 }
 
 /*Checks to see if the first argument is here_doc. If so, opens a temporary
 file and uses get_next_line to take input from the terminal and put it in 
 that file. It then becomes the input file. If the first argument is not 
 here_doc, the input file (which should be the first arg) is opened.*/
-void	validate_heredoc(char **argv, int argc, t_files *files)
+void	open_heredoc(char **argv, int argc, t_files *files)
 {
 	char	*str;
 	int		temp_file;
 
-	if (ft_strncmp("here_doc", argv[1], 8) == 0)
+	if (argc < 6)
+		exit_error(ARG_NUM_ERROR);
+	temp_file = open(".here_doc", O_TRUNC | O_CREAT | O_WRONLY, 0644);
+	while (get_next_line(0, &str))
 	{
-		if (argc < 6)
-			exit_error(ARG_NUM_ERROR);
-		temp_file = open(".here_doc", O_TRUNC | O_CREAT | O_WRONLY, 0644);
-		while (get_next_line(0, &str))
+		if ((ft_strlen(str) == ft_strlen(argv[2]) + 1)
+			&& (ft_strncmp(str, argv[2], ft_strlen(argv[2])) == 0))
 		{
-			if ((ft_strlen(str) == ft_strlen(argv[2]) + 1)
-				&& (ft_strncmp(str, argv[2], ft_strlen(argv[2])) == 0))
-			{
-				free(str);
-				break ;
-			}
-			else
-				write(temp_file, str, ft_strlen(str));
 			free(str);
+			break ;
 		}
-		close(temp_file);
-		files->input = open(".here_doc", O_RDONLY);
+		else
+			write(temp_file, str, ft_strlen(str));
+		free(str);
 	}
-	else
-		files->input = open(argv[1], O_RDONLY);
+	close(temp_file);
+	files->input = open(".here_doc", O_RDONLY);
+	files->output = open(argv[argc - 1], O_APPEND | O_CREAT | O_WRONLY, 0644);
 }
 
 int	main(int argc, char **argv, char **env)
@@ -120,8 +121,13 @@ int	main(int argc, char **argv, char **env)
 
 	if (argc < 5)
 		exit_error(ARG_NUM_ERROR);
-	validate_heredoc(argv, argc, &files);
-	files.output = open(argv[argc - 1], O_APPEND | O_CREAT | O_WRONLY, 0644);
+	if (ft_strncmp("here_doc", argv[1], 8) == 0)
+		open_heredoc(argv, argc, &files);
+	else
+	{
+		files.input = open(argv[1], O_RDONLY);
+		files.output = open(argv[argc - 1], O_TRUNC | O_CREAT | O_WRONLY, 0644);
+	}
 	if (files.input < 0)
 	{
 		close(files.output);
@@ -132,12 +138,7 @@ int	main(int argc, char **argv, char **env)
 		close(files.input);
 		exit_error(OPEN_ERROR);
 	}
-	dup2(files.input, STDIN_FILENO);
-	close(files.input);
 	command_loop(argc, argv, env, &files);
-	child_two(argv, argc, &files, env);
-	close_all(&files);
-	waitpid(files.pid, NULL, 0);
 	if (ft_strncmp("here_doc", argv[1], 8) == 0)
 		unlink(".here_doc");
 	return (0);
