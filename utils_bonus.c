@@ -6,28 +6,23 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 15:05:02 by kafortin          #+#    #+#             */
-/*   Updated: 2023/03/10 18:15:13 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/03/14 17:13:49 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
 
-/*Frees any char **tab properly.*/
-void	free_tab(char **tab)
+void	open_errors(t_files *files)
 {
-	int	i;
-
-	i = 0;
-	while (tab[i])
+	if (files->input < 0)
 	{
-		free(tab[i]);
-		tab[i] = NULL;
-		i++;
+		close(files->output);
+		exit_error(OPEN_ERROR);
 	}
-	if (tab)
+	if (files->output < 0)
 	{
-		free(tab);
-		tab = NULL;
+		close(files->input);
+		exit_error(OPEN_ERROR);
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:57:01 by kafortin          #+#    #+#             */
-/*   Updated: 2023/03/13 15:27:07 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/03/14 17:14:01 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ typedef struct files
 	pid_t	pid2;
 }			t_files;
 
+void	open_errors(t_files *files);
 void	free_tab(char **tab);
 void	free_struct(t_cmd *cmd);
 void	exit_error(char *error);

@@ -6,7 +6,7 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/12 16:30:13 by kafortin          #+#    #+#             */
-/*   Updated: 2023/03/14 16:44:39 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/03/14 17:12:26 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,5 +65,6 @@ void			free_if_not_empty(char **str);
 char			*null_calloc(char **str, unsigned int count, unsigned int size);
 char			*copy_from_src(char *dest, const char *src, unsigned int len);
 unsigned int	find_len_until(const char *str, const char to_find);
+void			free_tab(char **tab);
 
 #endif

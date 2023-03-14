@@ -6,7 +6,7 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:57:05 by kafortin          #+#    #+#             */
-/*   Updated: 2023/03/14 17:04:58 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/03/14 17:14:12 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ void	child_two(char **argv, int argc, t_files *files, char **env)
 		execve(cmd->path.path, (char *const *)cmd->cmd, env);
 		free_struct(cmd);
 	}
+	close_all(files);
+	waitpid(files->pid, NULL, 0);
 }
 
 /*Creates a new child process for each command (except the last one) and
@@ -81,9 +83,7 @@ void	command_loop(int argc, char **argv, char **env, t_files *files)
 		}
 		i++;
 	}
-	child_two(argv, argc, &files, env);
-	close_all(&files);
-	waitpid(files->pid, NULL, 0);
+	child_two(argv, argc, files, env);
 }
 
 /*Checks to see if the first argument is here_doc. If so, opens a temporary
@@ -128,16 +128,7 @@ int	main(int argc, char **argv, char **env)
 		files.input = open(argv[1], O_RDONLY);
 		files.output = open(argv[argc - 1], O_TRUNC | O_CREAT | O_WRONLY, 0644);
 	}
-	if (files.input < 0)
-	{
-		close(files.output);
-		exit_error(OPEN_ERROR);
-	}
-	if (files.output < 0)
-	{
-		close(files.input);
-		exit_error(OPEN_ERROR);
-	}
+	open_errors(&files);
 	command_loop(argc, argv, env, &files);
 	if (ft_strncmp("here_doc", argv[1], 8) == 0)
 		unlink(".here_doc");
