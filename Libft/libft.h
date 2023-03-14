@@ -6,7 +6,7 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/12 16:30:13 by kafortin          #+#    #+#             */
-/*   Updated: 2023/03/14 16:33:16 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/03/14 16:36:48 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int				ft_strcmp(const char *str1, const char *str2);
 int				ft_tablen(void **tab);
 void			ft_strcpy(char *dest, const char *src);
 char			*search_and_replace(char *str, char search, char replace);
-char			*get_next_line(int fd);
+int				get_next_line(int fd, char **line);
 unsigned int	scan_for_nl(const char *src);
 void			free_if_not_emptu(char **str);
 char			*null_calloc(char **str, unsigned int count, unsigned int size);
