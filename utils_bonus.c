@@ -6,14 +6,18 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 15:05:02 by kafortin          #+#    #+#             */
-/*   Updated: 2023/03/14 17:13:49 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/03/14 17:35:51 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
 
+/*Checks if the input and output files have been properly opened. If not, close
+the opened files and exits the program.*/
 void	open_errors(t_files *files)
 {
+	if (files->input < 0 && files->output < 0)
+		exit_error(OPEN_ERROR);
 	if (files->input < 0)
 	{
 		close(files->output);
