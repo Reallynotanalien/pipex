@@ -6,7 +6,7 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/16 19:05:22 by kafortin          #+#    #+#             */
-/*   Updated: 2023/03/13 16:40:11 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/03/14 17:42:07 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,11 @@ char	*access_path(t_cmd *cmd)
 	int	i;
 
 	i = 0;
-	while (cmd->path.paths[i])
+	while (cmd->path.env[i])
 	{
-		cmd->path.part = ft_strjoin(cmd->path.paths[i], "/");
-		cmd->path.path = ft_strjoin (cmd->path.part, cmd->cmd[0]);
-		free(cmd->path.part);
+		cmd->path.join = ft_strjoin(cmd->path.env[i], "/");
+		cmd->path.path = ft_strjoin (cmd->path.join, cmd->cmd[0]);
+		free(cmd->path.join);
 		if (access(cmd->path.path, F_OK) == 0)
 			return (cmd->path.path);
 		free(cmd->path.path);
@@ -48,7 +48,7 @@ char	*find_path(t_cmd *cmd, char **env)
 		if (env[i] == NULL || env[i + 1] == NULL)
 			return (ENV_ERROR);
 	}
-	cmd->path.paths = (char **)ft_split(env[i] + 5, ':');
+	cmd->path.env = (char **)ft_split(env[i] + 5, ':');
 	i = 0;
 	cmd->path.path = access_path(cmd);
 	return (cmd->path.path);

@@ -6,7 +6,7 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:57:01 by kafortin          #+#    #+#             */
-/*   Updated: 2023/03/10 18:09:17 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/03/14 17:48:05 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@
 typedef struct path
 {
 	char	*path;
-	char	*part;
-	char	**paths;
+	char	*join;
+	char	**env;
 }				t_path;
 
 typedef struct cmd
@@ -49,7 +49,7 @@ typedef struct files
 	pid_t	pid;
 }			t_files;
 
-void	free_tab(char **tab);
+void	open_errors(t_files *files);
 void	free_struct(t_cmd *cmd);
 void	exit_error(char *error);
 void	close_all(t_files *files);

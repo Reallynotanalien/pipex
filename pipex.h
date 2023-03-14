@@ -6,7 +6,7 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 15:57:01 by kafortin          #+#    #+#             */
-/*   Updated: 2023/03/14 17:14:01 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/03/14 17:42:22 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@
 typedef struct path
 {
 	char	*path;
-	char	*part;
-	char	**paths;
+	char	*join;
+	char	**env;
 }				t_path;
 
 typedef struct cmd

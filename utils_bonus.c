@@ -6,7 +6,7 @@
 /*   By: kafortin <kafortin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 15:05:02 by kafortin          #+#    #+#             */
-/*   Updated: 2023/03/14 17:35:51 by kafortin         ###   ########.fr       */
+/*   Updated: 2023/03/14 17:39:34 by kafortin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	free_struct(t_cmd *cmd)
 {
 	if (cmd->path.path)
 		free(cmd->path.path);
-	free_tab(cmd->path.paths);
+	free_tab(cmd->path.env);
 	free_tab(cmd->cmd);
 	if (cmd)
 		free(cmd);
